@@ -5,10 +5,14 @@
  */
 package asociaciones;
 
+import java.awt.Color;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -23,45 +27,19 @@ public class cartera_recibo extends javax.swing.JFrame {
      * Creates new form cartera_recibo
      */
     String nivel;
+    String numeroFactura;
+    NumberFormat nf;
+    int x;
+
     public cartera_recibo(String nivell) {
         initComponents();
-        combo();
-         nivel = nivell;
-         this.setLocationRelativeTo(this);
+
+        nivel = nivell;
+        this.setLocationRelativeTo(this);
         this.setTitle("FACTURA");
-             conexion con=new conexion();
-      Connection miConexion = con.conexion();
-      if(miConexion!=null){
-      Statement st=null;
-      ResultSet rs=null;
-    try {
-        st=miConexion.createStatement();
-      rs=st.executeQuery("select codigo from cartera");
-      while(rs.next()){
-        jComboBox1.addItem(rs.getString("codigo"));
-      }
-    } catch (SQLException ex) {
-        Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    }
-    }
-    
-    public void combo(){
-              conexion con=new conexion();
-      Connection miConexion = con.conexion();
-      if(miConexion!=null){
-      Statement st=null;
-      ResultSet rs=null;
-    try {
-        st=miConexion.createStatement();
-      rs=st.executeQuery("select codigo_cuota from recibo");
-      while(rs.next()){
-        jComboBox2.addItem(rs.getString("codigo_cuota"));
-      }
-    } catch (SQLException ex) {
-        Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
-    }
-      }
+        jRadioButton1.setSelected(true);
+        codigo();
+
     }
 
     /**
@@ -74,35 +52,32 @@ public class cartera_recibo extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
-        jComboBox2 = new javax.swing.JComboBox();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jRadioButton1 = new javax.swing.JRadioButton();
+        jRadioButton2 = new javax.swing.JRadioButton();
+        jLabel14 = new javax.swing.JLabel();
+        calenar_inicio = new com.toedter.calendar.JDateChooser();
+        jLabel3 = new javax.swing.JLabel();
+        jTextField3 = new javax.swing.JTextField();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        No_factura = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
-        jLabel1.setText("PAGO DE CUOTAS");
-
-        jLabel2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel2.setText("CODIGO CARTERA");
-
-        jLabel3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel3.setText("CODIGO RECIBO");
+        jLabel1.setText("PAGO ");
 
         jLabel4.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel4.setText("TOTAL");
-
-        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jComboBox1ItemStateChanged(evt);
-            }
-        });
 
         jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -130,107 +105,356 @@ public class cartera_recibo extends javax.swing.JFrame {
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/32.jpg"))); // NOI18N
 
+        jLabel2.setText("Buscar");
+
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
+
+        jRadioButton1.setText("PROPIEDAD");
+        jRadioButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jRadioButton1MouseClicked(evt);
+            }
+        });
+
+        jRadioButton2.setText("No CARTERA");
+        jRadioButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jRadioButton2MouseClicked(evt);
+            }
+        });
+
+        jLabel14.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel14.setText("FECHA");
+
+        jLabel3.setText("PROPIEDAD");
+
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Estado");
+
+        No_factura.setText("jLabel5");
+
+        jLabel8.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel8.setText("CODIGO RECIBO");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(46, 46, 46)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(46, 46, 46)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(96, 96, 96)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jRadioButton2)
+                                    .addComponent(jRadioButton1)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel14)
+                                .addGap(18, 18, 18)
+                                .addComponent(calenar_inicio, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel3)
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel6)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel7)))
+                                .addGap(201, 201, 201)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jComboBox1, 0, 144, Short.MAX_VALUE)
+                                    .addComponent(jTextField3)
+                                    .addComponent(jTextField1))))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel8)
+                        .addGap(58, 58, 58)
+                        .addComponent(No_factura)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
                         .addComponent(jLabel1)
-                        .addGap(34, 34, 34)
-                        .addComponent(jLabel5)
-                        .addContainerGap())
+                        .addGap(70, 70, 70)
+                        .addComponent(jLabel5))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1)
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(76, 76, 76))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jButton2)
-                                .addGap(51, 51, 51))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel4))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGap(73, 73, 73)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton2)
+                        .addGap(11, 11, 11)))
+                .addGap(61, 61, 61))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel5))
-                .addGap(49, 49, 49)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addComponent(jLabel5)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(58, 58, 58))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel3)))
-                .addGap(34, 34, 34)
+                            .addComponent(jLabel8)
+                            .addComponent(No_factura))))
+                .addGap(16, 16, 16)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jRadioButton1))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jRadioButton2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel14)
+                            .addComponent(calenar_inicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(23, 23, 23)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7))
+                .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-            conexion con = new conexion();
+    public void codigo() {
+        conexion con = new conexion();
         Connection miConexion = con.conexion();
-       
+        Statement st8 = null;
+        ResultSet rs8 = null;
+
+        nf = new DecimalFormat("0000");
+
+        try {
+            st8 = miConexion.createStatement();
+            rs8 = st8.executeQuery("SELECT MAX(codigo_recibo) as codigo_recibo FROM recibo");
+            while (rs8.next()) {
+                /*if (rs3.getInt(0) != null) {
+                    //numeroFactura = nf.format(Integer.parseInt(rs3.getInt("MAX(codigo)")) + 1);
+                    int x;
+                    x = rs3.getInt(0);
+                } else {
+                    //numeroFactura = "0001";
+                }*/
+
+                x = rs8.getInt("codigo_recibo") + 1;
+                No_factura.setText(Integer.toString(x));
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        conexion con = new conexion();
+        Connection miConexion = con.conexion();
+
         if (miConexion != null) {
             Statement st = null, st2 = null;
+            String strFecha1 = new SimpleDateFormat("yyyy-MM-dd").format(calenar_inicio.getDate());
             try {
-                    st2 = miConexion.createStatement();
-                    st2.execute("insert into cartera_recibo(codigo_cartera,codigo_cuo,total) values ('" +((String)jComboBox1.getSelectedItem())+ "','"+((String)jComboBox2.getSelectedItem())+"','"+ jTextField1.getText() + "')");
-                    JOptionPane.showMessageDialog(null, "GUARDADO");
-                    propiedad_cit ob = new propiedad_cit(nivel);
-                    ob.setVisible(true);
-                    dispose();
-                } catch (SQLException ex) {
-                    Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "" + ex);
-                }
+                st2 = miConexion.createStatement();
 
-        
+                String sql = "INSERT INTO `recibo`(`fecha_recibo`) VALUES ('" + strFecha1 + "')";
+                st2.execute(sql);
+                sql = "INSERT INTO `cartera_recibo`(`codigo_car`, `codigo_recibo`, `total`) VALUES ('" + jComboBox1.getSelectedItem() + "','" + x + "','" + jTextField1.getText() + "')";
+                st2.execute(sql);
+                JOptionPane.showMessageDialog(null, "GUARDADO");
+                propiedad_cit ob = new propiedad_cit(nivel);
+                ob.setVisible(true);
+                dispose();
+            } catch (SQLException ex) {
+                Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(null, "" + ex);
+            }
+
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-         principal ob=new principal(nivel);
+        principal ob = new principal(nivel);
         ob.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
-        // TODO add your handling code here:
-        //consulta con 
-    }//GEN-LAST:event_jComboBox1ItemStateChanged
-
     private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_jTextField1KeyTyped
+
+    private void jRadioButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jRadioButton1MouseClicked
+        // TODO add your handling code here:
+        jRadioButton2.setSelected(false);
+    }//GEN-LAST:event_jRadioButton1MouseClicked
+
+    private void jRadioButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jRadioButton2MouseClicked
+        // TODO add your handling code here:
+        jRadioButton1.setSelected(false);
+    }//GEN-LAST:event_jRadioButton2MouseClicked
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+        if (jRadioButton1.isSelected()) {
+            conexion con = new conexion();
+            Connection miConexion = con.conexion();
+            if (miConexion != null) {
+                Statement st = null;
+                ResultSet rs = null;
+
+                try {
+                    st = miConexion.createStatement();
+                    String sql = "SELECT nombre FROM propiedad WHERE nombre like '" + jTextField2.getText() + "%'";
+                    rs = st.executeQuery(sql);
+
+                    //rs = st.executeQuery("SELECT nombre FROM propiedad WHERE name like '" + jTextField2.getText() + "%'");
+                    if (rs != null) {
+                        if (rs.next()) {
+
+                            jTextField3.setText(rs.getString("nombre"));
+
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No se ha encontrado el registro");
+                    }
+
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "No se ha podido conectar a la base de datos");
+                }
+
+            }
+
+            if (miConexion != null) {
+                jComboBox1.removeAllItems();
+                Statement st2 = null;
+                ResultSet rs2 = null;
+                try {
+                    st2 = miConexion.createStatement();
+                    rs2 = st2.executeQuery("SELECT cartera.codigo FROM propiedad, cartera WHERE propiedad.codigo = cartera.cod_propiedad and propiedad.nombre =  '" + jTextField3.getText() + "'");
+                    if (rs2 != null) {
+                        if (rs2.next()) {
+                            jComboBox1.addItem(rs2.getString("cartera.codigo"));
+                            jComboBox1.setEnabled(true);
+
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No se ha encontrado el registro");
+                    }
+
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "No se ha podido conectar a la base de datos");
+                }
+
+            }
+
+        }
+
+        if (jRadioButton2.isSelected()) {
+            conexion con = new conexion();
+            Connection miConexion = con.conexion();
+            if (miConexion != null) {
+                Statement st = null;
+                ResultSet rs = null;
+
+                try {
+                    st = miConexion.createStatement();
+                    String sql = "SELECT nombre FROM propiedad WHERE codigo = '" + jTextField2.getText() + "'";
+                    rs = st.executeQuery(sql);
+
+                    //rs = st.executeQuery("SELECT nombre FROM propiedad WHERE name like '" + jTextField2.getText() + "%'");
+                    if (rs != null) {
+                        if (rs.next()) {
+
+                            jTextField3.setText(rs.getString("nombre"));
+                            rs.close();
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No se ha encontrado el registro");
+                    }
+
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "No se ha podido conectar a la base de datos");
+                }
+
+            }
+        }
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+        conexion con = new conexion();
+        Connection miConexion = con.conexion();
+        String noCodigo;
+        if (miConexion != null) {
+            Statement st = null;
+            Statement st2 = null;
+            ResultSet rs = null;
+            ResultSet rs2 = null;
+
+            try {
+                st = miConexion.createStatement();
+                rs = st.executeQuery("SELECT estado FROM `cartera` WHERE codigo =  '" + jComboBox1.getSelectedItem() + "'");
+
+                if (rs != null) {
+                    if (rs.next()) {
+                        if (rs.getString("estado") != "0") {
+                            jLabel7.setText("No Pago");
+                            jLabel7.setForeground(Color.red);
+                        } else {
+
+                            jLabel7.setText("Pago");
+                            jLabel7.setForeground(Color.GREEN);
+                        }
+
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "No se ha encontrado el registro");
+                }
+                rs2 = st.executeQuery("SELECT (SUM(cartera.cuota_propietario) + SUM(cartera.cuota_propiedad)) as total FROM cartera WHERE cartera.codigo = '" + jComboBox1.getSelectedItem() + "'");
+                if (rs2 != null) {
+                    if (rs2.next()) {
+                        jTextField1.setText(rs2.getString("total"));
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "No se ha encontrado el registro");
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "No se ha podido conectar a la base de datos");
+            }
+
+        }
+
+
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -262,21 +486,30 @@ public class cartera_recibo extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-               
+
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel No_factura;
+    private com.toedter.calendar.JDateChooser calenar_inicio;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JComboBox jComboBox2;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
 }
