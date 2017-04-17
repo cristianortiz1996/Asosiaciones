@@ -26,76 +26,81 @@ import javax.swing.table.DefaultTableModel;
 public class propiedad extends javax.swing.JFrame {
 
     String nivel;
+    float cuotaFija = 0;
+    float cuotaArea = 0;
+    float totalSumaFijaArea;
+
     public propiedad(String nivell) {
         initComponents();
-        
+
         combo2();
         combo3();
-         nivel = nivell;
-         this.setLocationRelativeTo(this);
+        nivel = nivell;
+        this.setLocationRelativeTo(this);
         this.setTitle("PROPIEDAD");
         conexion con = new conexion();
         Connection miConexion = con.conexion();
-          if (miConexion != null) {
-                 Statement st3 = null;
-            ResultSet rs3=null;
-                JTable tabla;
+        if (miConexion != null) {
+            Statement st3 = null;
+            ResultSet rs3 = null;
+            JTable tabla;
             DefaultTableModel modelo = new DefaultTableModel();
             jTable1.setLayout(new FlowLayout());
             tabla = this.jTable1;
-           tabla.setModel(modelo);
+            tabla.setModel(modelo);
             modelo.setColumnIdentifiers(new Object[]{"CEDULA", "NOMBRE", "APELLIDO"});
- 
-                try {
-                 
-                  st3= miConexion.createStatement(); 
-                  rs3 = st3.executeQuery("select cedula,nombre,apellido from socios ORDER BY cedula ASC");
-                  while (rs3.next()) {
+
+            try {
+
+                st3 = miConexion.createStatement();
+                rs3 = st3.executeQuery("select cedula,nombre,apellido from socios ORDER BY cedula ASC");
+                while (rs3.next()) {
                     modelo.addRow(new Object[]{rs3.getString(1), rs3.getString(2), rs3.getString(3)});
                 }
-                   
-                    
-                } catch (SQLException ex) {
-                    Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
-                    
-                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+
             }
+        }
+    }
+
+    public void combo2() {
+        conexion con = new conexion();
+        Connection miConexion = con.conexion();
+        if (miConexion != null) {
+            Statement st = null;
+            ResultSet rs = null;
+            try {
+                st = miConexion.createStatement();
+                rs = st.executeQuery("select codigo from departamento ORDER BY codigo ASC");
+                while (rs.next()) {
+                    jComboBox3.addItem(rs.getString("codigo"));
                 }
-    
-     public void combo2(){
-         conexion con=new conexion();
-      Connection miConexion = con.conexion();
-      if(miConexion!=null){
-      Statement st=null;
-      ResultSet rs=null;
-    try {
-        st=miConexion.createStatement();
-      rs=st.executeQuery("select codigo from departamento ORDER BY codigo ASC");
-      while(rs.next()){
-        jComboBox3.addItem(rs.getString("codigo"));
-      }
-    } catch (SQLException ex) {
-        Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
-      }
-     }
-      public void combo3(){
-         conexion con=new conexion();
-      Connection miConexion = con.conexion();
-      if(miConexion!=null){
-      Statement st=null;
-      ResultSet rs=null;
-    try {
-        st=miConexion.createStatement();
-      rs=st.executeQuery("select codigo_munIcipio from municipio ORDER BY codigo_municipio ASC");
-      while(rs.next()){
-        jComboBox4.addItem(rs.getString("codigo_municipio"));
-      }
-    } catch (SQLException ex) {
-        Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+
+    public void combo3() {
+        conexion con = new conexion();
+        Connection miConexion = con.conexion();
+        if (miConexion != null) {
+            Statement st = null;
+            ResultSet rs = null;
+            try {
+                st = miConexion.createStatement();
+                rs = st.executeQuery("select codigo_munIcipio from municipio ORDER BY codigo_municipio ASC");
+                while (rs.next()) {
+                    jComboBox4.addItem(rs.getString("codigo_municipio"));
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
-      }
-     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -109,7 +114,6 @@ public class propiedad extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         buttonGroup1 = new javax.swing.ButtonGroup();
         buttonGroup2 = new javax.swing.ButtonGroup();
-        buttonGroup3 = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -227,7 +231,7 @@ public class propiedad extends javax.swing.JFrame {
         jRadioButton3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jRadioButton3.setText("FIJA");
 
-        buttonGroup3.add(jRadioButton5);
+        buttonGroup2.add(jRadioButton5);
         jRadioButton5.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jRadioButton5.setText("AREA");
 
@@ -410,36 +414,36 @@ public class propiedad extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       conexion con = new conexion();
+        conexion con = new conexion();
         Connection miConexion = con.conexion();
-       int rowindexstart=jTable1.getSelectedRow();
-       int rowindexend=jTable1.getSelectionModel().getMaxSelectionIndex();
-       
+        int rowindexstart = jTable1.getSelectedRow();
+        int rowindexend = jTable1.getSelectionModel().getMaxSelectionIndex();
+
         if (miConexion != null) {
-            Statement st = null, st2 = null,st4=null;
+            Statement st = null, st2 = null, st4 = null;
             ResultSet rs = null;
- int aux = 0;
- String tipo = "";
- String tipo_cuota = "";
- float cuota = 0;
- float cuota2 = 0;
- float total=cuota+cuota2;
- 
-  if (jRadioButton1.isSelected()) {
+            int aux = 0;
+            String tipo = "";
+            String tipo_cuota = "";
+            if (jRadioButton1.isSelected()) {
                 tipo = "dueño";
             }
             if (jRadioButton2.isSelected()) {
                 tipo = "arrendatario";
             }
-            if(jRadioButton3.isSelected()){
-                tipo_cuota="FIJA";
-                cuota=Float.parseFloat(jTextField8.getText());
-               }
-            if(jRadioButton5.isSelected()){
-                tipo_cuota="AREA";
-                cuota2=Float.parseFloat(jTextField9.getText())*Float.parseFloat(jTextField5.getText());
-               }
-           
+            if (jRadioButton3.isSelected()) {
+
+                tipo_cuota = "FIJA";
+                cuotaFija = Float.parseFloat(jTextField8.getText());
+                
+            }
+            if (jRadioButton5.isSelected()) {
+
+                tipo_cuota = "AREA";
+                cuotaArea = Float.parseFloat(jTextField9.getText()) * Float.parseFloat(jTextField5.getText());
+                
+            }
+
             try {
                 st = miConexion.createStatement();
                 rs = st.executeQuery("select codigo from propiedad ");
@@ -456,40 +460,48 @@ public class propiedad extends javax.swing.JFrame {
             } catch (SQLException ex) {
                 Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
             }
-             for (int r = rowindexstart; r <=rowindexend; r++) {
-                 jTable1.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION); 
-            if (aux == 0) {
-                 String strFecha1 = new SimpleDateFormat("yyyy-MM-dd").format(calenar_inicio.getDate());
-                try {
-                    st2 = miConexion.createStatement();
-                    st4 = miConexion.createStatement();
-                 
-                    st4.execute("insert into propiedad (codigo,nombre,fecha,cantidad_lotes,area,cantidad_plantas,tipo,tipo_cuotas,cuotas,cod_municipio,cod_departamento) values ('" + jTextField3.getText() + "','" + jTextField7.getText() +"','"+strFecha1+"','"+jTextField4.getText() + "','" + jTextField5.getText() + "','"+ jTextField6.getText()+"','"+tipo+"','"+tipo_cuota+"','"+total+"','"+((String)jComboBox4.getSelectedItem())+"','"+((String)jComboBox3.getSelectedItem())+"')");
-                   st2.execute("insert into socio_propiedad(cod_socios,cod_propiedad) values ('" + jTable1.getValueAt(r, 0).toString() + "','" +jTextField3.getText()+"')");
-                    JOptionPane.showMessageDialog(null, "GUARDADO");
-                    propiedad ob = new propiedad(nivel);
-                    ob.setVisible(true);
-                    dispose();
-                } catch (SQLException ex) {
-                    Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "" + ex);
+            boolean validacion = true;
+            for (int r = rowindexstart; r <= rowindexend; r++) {
+                jTable1.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+                if (aux == 0) {
+                    String strFecha1 = new SimpleDateFormat("yyyy-MM-dd").format(calenar_inicio.getDate());
+                    try {
+                        st2 = miConexion.createStatement();
+                        st4 = miConexion.createStatement();
+                        totalSumaFijaArea = cuotaFija + cuotaArea;
+                        if(validacion == true){
+                            st4.execute("insert into propiedad (codigo,nombre,fecha,cantidad_lotes,area,cantidad_plantas,tipo,tipo_cuotas,cuotas,cod_municipio,cod_departamento) values ('" + jTextField3.getText() + "','" + jTextField7.getText() + "','" + strFecha1 + "','" + jTextField4.getText() + "','" + jTextField5.getText() + "','" + jTextField6.getText() + "','" + tipo + "','" + tipo_cuota + "','" + totalSumaFijaArea + "','" + ((String) jComboBox4.getSelectedItem()) + "','" + ((String) jComboBox3.getSelectedItem()) + "')");
+                            validacion = false;
+                        }
+                        
+                        st2.execute("insert into socio_propiedad(cod_socios,cod_propiedad) values ('" + jTable1.getValueAt(r, 0).toString() + "','" + jTextField3.getText() + "')");
+                        
+                        propiedad ob = new propiedad(nivel);
+                        cuotaFija = 0;
+                        cuotaArea = 0;
+                        totalSumaFijaArea = 0;
+                        ob.setVisible(true);
+                        dispose();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(null, "" + ex);
+                    }
                 }
             }
-        }
-        
+            JOptionPane.showMessageDialog(null, "GUARDADO");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         principal ob = new principal(nivel);
-ob.setVisible(true);
-dispose();
+        ob.setVisible(true);
+        dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         crear_cliente ob = new crear_cliente(nivel);
-            ob.setVisible(true);
-            dispose();
+        ob.setVisible(true);
+        dispose();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
@@ -522,7 +534,7 @@ dispose();
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-               
+
             }
         });
     }
@@ -530,7 +542,6 @@ dispose();
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
-    private javax.swing.ButtonGroup buttonGroup3;
     private com.toedter.calendar.JDateChooser calenar_inicio;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

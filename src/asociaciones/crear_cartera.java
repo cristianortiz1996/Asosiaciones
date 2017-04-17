@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -28,47 +29,47 @@ import javax.swing.table.TableRowSorter;
 public class crear_cartera extends javax.swing.JFrame {
 
     String nivel;
-     String No_Factura;
-     NumberFormat nf;
-     
+    String numeroFactura;
+    NumberFormat nf;
+
     public crear_cartera(String nivell) {
         initComponents();
         codigo();
-        
-     
-         nivel = nivell;
-         this.setLocationRelativeTo(this);
+
+        nivel = nivell;
+        this.setLocationRelativeTo(this);
         this.setTitle("CARTERA");
-       
-        
+
     }
-    
-     public void codigo(){
-          conexion con = new conexion();
+
+    public void codigo() {
+        conexion con = new conexion();
         Connection miConexion = con.conexion();
         Statement st3 = null;
         ResultSet rs3 = null;
-          nf = new DecimalFormat("0000"); 
+
+        nf = new DecimalFormat("0000");
+
         try {
             st3 = miConexion.createStatement();
-            rs3 = st3.executeQuery("SELECT MAX(codigo_cuota) as codigo_cuota FROM recibo");
+            rs3 = st3.executeQuery("SELECT MAX(codigo) as codigo FROM cartera");
             while (rs3.next()) {
-                if (rs3.getString("codigo_cuota") != null) {
-                    No_Factura = nf.format(Integer.parseInt(rs3.getString("codigo_cuota")) + 1);
+                /*if (rs3.getInt(0) != null) {
+                    //numeroFactura = nf.format(Integer.parseInt(rs3.getInt("MAX(codigo)")) + 1);
+                    int x;
+                    x = rs3.getInt(0);
                 } else {
-                    No_Factura = "1";
-                }
-
+                    //numeroFactura = "0001";
+                }*/
+                int x;
+                x = rs3.getInt("codigo") + 1;
+                No_factura.setText(Integer.toString(x));
             }
-            No_factura.setText(No_Factura);
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
-     }
-     
-     
-    
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -85,16 +86,8 @@ public class crear_cartera extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jDateChooser2 = new com.toedter.calendar.JDateChooser();
-        calenar_inicio = new com.toedter.calendar.JDateChooser();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         No_factura = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jComboBox2 = new javax.swing.JComboBox();
@@ -106,8 +99,8 @@ public class crear_cartera extends javax.swing.JFrame {
         jLabel1.setText("CREAR CARTERA");
 
         jButton1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/37.jpg"))); // NOI18N
-        jButton1.setText("GENERAR");
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/15.jpg"))); // NOI18N
+        jButton1.setText("GUARDAR");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -127,33 +120,21 @@ public class crear_cartera extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "CODIGO", "FECHA", "CUOTA_SOCIO", "CUOTA_PROPIEDAD", "MULTAS"
+                "FECHA", "CUOTA_SOCIO", "CUOTA_PROPIEDAD", "MULTAS"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
-
-        jLabel2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel2.setText("FECHA INI");
-
-        jLabel3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel3.setText("FECHA FIN");
 
         No_factura.setText("jLabel5");
 
         jLabel4.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel4.setText("CODIGO CARTERA");
-
-        jLabel5.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel5.setText("CEDULA");
-
-        jLabel7.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel7.setText("NOMBRE");
 
         jLabel8.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel8.setText("COD_PROPIEDAD");
@@ -161,73 +142,58 @@ public class crear_cartera extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel9.setText("NOMBRE PROPIEDAD");
 
+        jComboBox2.setEnabled(false);
+        jComboBox2.setName("comboBox"); // NOI18N
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
+
+        jTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField2KeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(82, 82, 82)
-                        .addComponent(jLabel6)
-                        .addGap(66, 66, 66)
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel2)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(calenar_inicio, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addGap(57, 57, 57)
-                                        .addComponent(No_factura))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(301, 301, 301)
-                                        .addComponent(jLabel7)))
-                                .addGap(39, 39, 39))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addGap(18, 18, 18)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(42, 42, 42)))))
-                .addContainerGap())
+                .addGap(82, 82, 82)
+                .addComponent(jLabel6)
+                .addGap(66, 66, 66)
+                .addComponent(jLabel1)
+                .addContainerGap(178, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addGap(18, 18, 18)
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel9)
+                        .addGap(18, 18, 18)
+                        .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(51, 51, 51))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addGap(36, 36, 36)
-                        .addComponent(jButton2)
-                        .addGap(113, 113, 113))
-                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(30, 30, 30)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addGap(18, 18, 18)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jButton1)
+                                .addGap(36, 36, 36)
+                                .addComponent(jButton2)
+                                .addGap(113, 113, 113))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 494, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(52, 52, 52))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(58, 58, 58)
+                        .addComponent(No_factura)
                         .addGap(0, 0, Short.MAX_VALUE))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(52, 52, 52))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -239,31 +205,17 @@ public class crear_cartera extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel6)))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jLabel2)
-                        .addComponent(calenar_inicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel3)))
-                .addGap(27, 27, 27)
+                .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(No_factura)
-                    .addComponent(jLabel4))
-                .addGap(23, 23, 23)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                    .addComponent(jLabel4)
+                    .addComponent(No_factura))
+                .addGap(42, 42, 42)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
+                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -275,65 +227,92 @@ public class crear_cartera extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-          conexion con = new conexion();
+        conexion con=new conexion();
         Connection miConexion = con.conexion();
-       String estado="?";
-       
-        if (miConexion != null) {
-           
-            Statement st = null,st2 = null;
-            ResultSet rs = null, rs2=null;
-            
- int aux = 0;
+        if(miConexion!=null){
+            Statement st=null,st2=null;
+            ResultSet rs=null,rs2=null;
             try {
-                st = miConexion.createStatement();
-                rs = st.executeQuery("select codigo from cartera");
-                while (rs.next()) {
-                    if (No_factura.getText().equals(rs.getString(1))) {
-                        JOptionPane.showMessageDialog(null, "LA CARTERA: " + rs.getString(1) + " YA EXISTE");
-                        aux = 1;
-                        break;
-                    } else {
-
-                    }
-                }
-
-            } catch (SQLException ex) {
-                Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            if (aux == 0) {
-                 String strFecha1 = new SimpleDateFormat("yyyy-MM-dd").format(calenar_inicio.getDate());
-        String strFecha2 = new SimpleDateFormat("yyyy-MM-dd").format(jDateChooser2.getDate());
-                JTable tabla;
-            DefaultTableModel modelo = new DefaultTableModel();
-            jTable1.setLayout(new FlowLayout());
-            tabla = this.jTable1;
-           tabla.setModel(modelo);
-            modelo.setColumnIdentifiers(new Object[]{"CODIGO", "FECHA", "CUOTA_SOCIOS", "CUOTA_PROPIEDAD", "MULTAS"});
- 
-                try {
-                 
-                  st2= miConexion.createStatement(); 
-                  rs2 = st2.executeQuery("select cartera.codigo,fecha,cuotas from cartera,propiedad WHERE cartera.cod_propiedad = propiedad.codigo AND cartera.fecha_ini>='" + strFecha1 + "' AND cartera.fecha_ini<='" + strFecha2 + "' ORDER BY cartera.codigo ASC");
-                  while (rs2.next()) {
-                    modelo.addRow(new Object[]{rs2.getString(1), rs2.getString(2), rs2.getString(4)});
-                }
-                   
+                    st2=miConexion.createStatement();
+                    st2.execute("INSERT INTO `cartera`( `fecha_ini`, `fecha_fin`, `cuota_propietario`, `cuota_propiedad`, `estado`, `cod_propiedad`) VALUES ('"+jTable1.getValueAt(0, 0).toString()+"','"+jTable1.getValueAt(0, 0).toString()+"','"+jTable1.getValueAt(0, 1).toString()+"','"+jTable1.getValueAt(0, 2).toString()+"','"+ "0"+"','"+jTextField2.getText()+"')");
+                    JOptionPane.showMessageDialog(null,"GUARDADO");
+                    st2.close();
                     
                 } catch (SQLException ex) {
                     Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
-                    
+                    JOptionPane.showMessageDialog(null,""+ex);
                 }
-            }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-         principal ob=new principal(nivel);
+        principal ob = new principal(nivel);
         ob.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTextField2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyTyped
+        // TODO add your handling code here:
+        jComboBox2.removeAllItems();
+        conexion con = new conexion();
+        Connection miConexion = con.conexion();
+        if (miConexion != null) {
+            Statement st = null;
+            ResultSet rs = null;
+
+            try {
+                st = miConexion.createStatement();
+                rs = st.executeQuery("SELECT nombre FROM propiedad WHERE codigo = '" + jTextField2.getText() + "'");
+                if (rs != null) {
+                    if (rs.next()) {
+                        jComboBox2.addItem(rs.getString("nombre"));
+                        jComboBox2.setEnabled(true);
+                        rs.close();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "No se ha encontrado el registro");
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "No se ha podido conectar a la base de datos");
+            }
+
+        }
+    }//GEN-LAST:event_jTextField2KeyTyped
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+        // TODO add your handling code here:
+        conexion con = new conexion();
+        Connection miConexion = con.conexion();
+        if (miConexion != null) {
+            Statement st = null;
+            ResultSet rs = null;
+            try {
+                st = miConexion.createStatement();
+                rs = st.executeQuery("SELECT fecha, cuotas FROM propiedad WHERE nombre = '" + jComboBox2.getSelectedItem() + "'");
+                if (rs != null) {
+                    if (rs.next()) {
+                        Object[] data = {rs.getString("fecha"), "", rs.getString("cuotas"),  ""};
+                        DefaultTableModel model = new DefaultTableModel();
+                        jTable1.setModel(model);
+                        model.setColumnIdentifiers(new Object[]{"FECHA INICIAL", "CUOTA_SOCIOS", "CUOTA_PROPIEDAD", "MULTAS"});
+                        model.addRow(data);
+
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "No se ha encontrado el registro");
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "No se ha podido conectar a la base de datos");
+            }
+
+        }
+
+    }//GEN-LAST:event_jComboBox2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -365,31 +344,23 @@ public class crear_cartera extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-              
+
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel No_factura;
-    private com.toedter.calendar.JDateChooser calenar_inicio;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox2;
-    private com.toedter.calendar.JDateChooser jDateChooser2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 }

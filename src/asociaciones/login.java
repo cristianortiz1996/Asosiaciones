@@ -135,34 +135,34 @@ public class login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        String user,pass,contra="2",nivel="2";
-user=jTextField1.getText();
-pass=jPasswordField1.getText();
-  conexion con=new conexion();
-      Connection miConexion = con.conexion();
-      if(miConexion!=null){
-      Statement st=null;
-      ResultSet rs=null;
-    try {
-        st=miConexion.createStatement();
-      rs=st.executeQuery("select * from usuarios where usuario= '"+user+"'");
-        if(rs.next()){
-            contra=rs.getString(2);
-            nivel=rs.getString(3);
+        String user, pass, contra = "2", nivel = "2";
+        user = jTextField1.getText();
+        pass = jPasswordField1.getText();
+        conexion con = new conexion();
+        Connection miConexion = con.conexion();
+        if (miConexion != null) {
+            Statement st = null;
+            ResultSet rs = null;
+            try {
+                st = miConexion.createStatement();
+                rs = st.executeQuery("select * from usuarios where usuario= '" + user + "'");
+                if (rs.next()) {
+                    contra = rs.getString(2);
+                    nivel = rs.getString(3);
+                }
+                if (pass.equals(contra)) {
+                    principal ob = new principal(nivel);
+                    ob.setVisible(true);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "EL NOMBRE DE USUARIO O CONTRASEÑA NO SON VALIDOS");
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
-        if(pass.equals(contra)){
-    principal ob = new principal (nivel);
-    ob.setVisible(true);
-    dispose();
-}else{
-        JOptionPane.showMessageDialog(null,"EL NOMBRE DE USUARIO O CONTRASEÑA NO SON VALIDOS");
-        }
-        
-    } catch (SQLException ex) {
-        Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    
-    }                
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
